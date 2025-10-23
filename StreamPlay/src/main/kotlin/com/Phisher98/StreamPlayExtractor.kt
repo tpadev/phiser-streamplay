@@ -4399,7 +4399,7 @@ object StreamPlayExtractor : StreamPlay() {
             val xTrSignature = generateXTrSignature(
                 "POST", "application/json", "application/json; charset=utf-8", url, jsonBody
             )
-            /*
+            
             val headers = mapOf(
                 "user-agent" to "com.community.mbox.in/50020042 (Linux; Android 16)",
                 "accept" to "application/json",
@@ -4409,10 +4409,9 @@ object StreamPlayExtractor : StreamPlay() {
                 "x-client-info" to """{"package_name":"com.community.mbox.in","version_name":"3.0.03.0529.03"}""",
                 "x-client-status" to "0"
             )
-            */
+            
 
-            val requestBody = jsonBody.toRequestBody("application/json".toMediaType())
-            // val response = app.post(url, headers = headers, requestBody = requestBody)
+            val response = app.post(url, headers = headers, requestBody = requestBody)
             val response = app.post(url, requestBody = requestBody)
             if (response.code != 200) return false
 
@@ -4446,14 +4445,12 @@ object StreamPlayExtractor : StreamPlay() {
                         "application/json",
                         subjectUrl
                     )
-                    /*
                     val subjectHeaders = headers + mapOf(
                         "x-client-token" to subjectXToken,
                         "x-tr-signature" to subjectXSign
                     )
                     val subjectRes = app.get(subjectUrl, headers = subjectHeaders)
-                    */
-                    val subjectRes = app.get(subjectUrl)
+                    
                     if (subjectRes.code != 200) continue
 
                     val subjectJson = mapper.readTree(subjectRes.body.string())
@@ -4488,7 +4485,7 @@ object StreamPlayExtractor : StreamPlay() {
                             "application/json",
                             playUrl
                         )
-                        //val playHeaders = headers + mapOf("x-client-token" to token, "x-tr-signature" to sign)
+
                         val playHeaders = mapOf("x-client-token" to token, "x-tr-signature" to sign)
 
                         val playRes = app.get(playUrl)
@@ -4545,8 +4542,8 @@ object StreamPlayExtractor : StreamPlay() {
                                                 else -> INFER_TYPE
                                             }
                                         ) {
-                                            //this.headers = mapOf("Referer" to movieBox) +
-                                            //        (if (signCookie != null) mapOf("Cookie" to signCookie) else emptyMap())
+                                            this.headers = mapOf("Referer" to movieBox) +
+                                                    (if (signCookie != null) mapOf("Cookie" to signCookie) else emptyMap())
                                             this.quality = getQualityFromName("$quality")
                                         }
                                     )
@@ -4589,8 +4586,8 @@ object StreamPlayExtractor : StreamPlay() {
                                             else -> INFER_TYPE
                                         }
                                     ) {
-                                        //this.headers = mapOf("Referer" to movieBox) +
-                                        //        (if (signCookie != null) mapOf("Cookie" to signCookie) else emptyMap())
+                                        this.headers = mapOf("Referer" to movieBox) +
+                                                (if (signCookie != null) mapOf("Cookie" to signCookie) else emptyMap())
                                         this.quality = getQualityFromName(resText)
                                     }
                                 )
@@ -4607,7 +4604,7 @@ object StreamPlayExtractor : StreamPlay() {
                                 val subToken = generateXClientToken()
                                 val subSign = generateXTrSignature("GET", "", "", subLink)
 
-                                /*
+                                
                                 val subHeaders = mapOf(
                                     "User-Agent" to "com.community.mbox.in/50020042 (Linux; U; Android 16; en_IN; sdk_gphone64_x86_64; Build/BP22.250325.006; Cronet/133.0.6876.3)",
                                     "Accept" to "",
@@ -4617,10 +4614,9 @@ object StreamPlayExtractor : StreamPlay() {
                                     "x-client-token" to subToken,
                                     "x-tr-signature" to subSign
                                 )
-                                */
+                                
 
-                                // val subRes = app.get(subLink, headers = subHeaders)
-                                val subRes = app.get(subLink)
+                                val subRes = app.get(subLink, headers = subHeaders)
                                 if (subRes.code != 200) continue
 
                                 val subRoot = mapper.readTree(subRes.body.string())
